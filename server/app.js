@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer-extra");
+const express = require("express");
 
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
@@ -8,10 +9,20 @@ puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
+/* REST API */
+
+const app = express();
+
+app.get("/", (req, res) => {
+  return res.send("Received a GET HTTP method");
+});
+
+app.listen(4000, () => console.log(`Example app listening on port ${4000}!`));
+
 const webScraper = async (url, xPath, source) => {
   console.log(source, "starting...");
 
-  var startTime = performance.now();
+  //var startTime = performance.now();
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
@@ -31,8 +42,8 @@ const webScraper = async (url, xPath, source) => {
     console.log(source, text);
   }
 
-  var endTime = performance.now();
-  console.log(`${source} took ${Math.floor(endTime - startTime)} milliseconds`);
+  //var endTime = performance.now();
+  //console.log(`${source} took ${Math.floor(endTime - startTime)} milliseconds`);
 
   await browser.close();
 };
