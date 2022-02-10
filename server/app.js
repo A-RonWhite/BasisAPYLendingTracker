@@ -9,15 +9,9 @@ puppeteer.use(StealthPlugin());
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }));
 
-/* REST API */
-
-const app = express();
-
-app.get("/", (req, res) => {
-  return res.send("Received a GET HTTP method");
-});
-
-app.listen(4000, () => console.log(`Example app listening on port ${4000}!`));
+let basisAPY;
+let franciumAPY;
+let tulipAPY;
 
 const webScraper = async (url, xPath, source) => {
   console.log(source, "starting...");
@@ -42,6 +36,14 @@ const webScraper = async (url, xPath, source) => {
     console.log(source, text);
   }
 
+  if (source === "Francium: ") {
+    franciumAPY = text;
+  }
+
+  if (source === "Tulip: ") {
+    tulipAPY = text;
+  }
+
   //var endTime = performance.now();
   //console.log(`${source} took ${Math.floor(endTime - startTime)} milliseconds`);
 
@@ -52,6 +54,7 @@ const calculateAPY = (vaultTokens) => {
   var t = 80 * (13194.444444444443 / vaultTokens) * 365;
   var x = 100 * (Math.pow(1 + t / 29200, 29200) - 1);
   console.log("BASIS: ", x);
+  basisAPY = x;
 };
 
 // var interval = setInterval(() => {
@@ -87,3 +90,17 @@ webScraper(
   '//*[@id="root"]/section/main/div/div[2]/div/div[1]/div/div[2]/div[4]/div[2]/text()[1]',
   "Solscan: "
 );
+
+/* REST API */
+
+/* const app = express();
+
+app.get("/basis", (req, res) => {
+  res.status(200).send({
+    basis: basisAPY,
+    francium: franciumAPY,
+    tulip: tulipAPY,
+  });
+});
+
+app.listen(4000, () => console.log(`Example app listening on port ${4000}!`)); */
