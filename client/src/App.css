@@ -13,7 +13,7 @@
   }
 }
 
-.App-header {
+.App {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -28,11 +28,20 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container {
+  border: 3px solid white;
+  border-radius: 20px;
+  padding: 1rem;
+}
+
+.farmerWrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+  justify-content: center;
+}
+
+.yBorder {
+  border-top: 3px solid white;
+  border-bottom: 3px solid white;
 }

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
+import Farmer from "./components/Farmer";
+import basisLogo from "./images/basis-logo.png";
+import franciumLogo from "./images/francium-logo.png";
+import tulipLogo from "./images/tulip-logo.svg";
 import "./App.css";
 
 interface test {
   basis: number;
-  francium: string;
-  tulip: string;
+  francium: number;
+  tulip: number;
 }
 
 function App() {
@@ -25,16 +28,20 @@ function App() {
           console.log(apy);
         });
       //  setPostArray([{name: 'a'}, {name: 'b'},{name: 'c'}])
-    }, 3000);
+    }, 6000);
   };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Basis: {apy.basis}%</h1>
-        <h1>Francium: {apy.francium}%</h1>
-        <h1>Tulip: {apy.tulip}%</h1>
-      </header>
+      <main className="container">
+        <Farmer title="Basis" farmerLogo={basisLogo} farmerAPY={apy.basis} />
+        <Farmer
+          title="Francium"
+          farmerLogo={franciumLogo}
+          farmerAPY={apy.francium}
+          middleEl={true}
+        />
+        <Farmer title="Tulip" farmerLogo={tulipLogo} farmerAPY={apy.tulip} />
+      </main>
     </div>
   );
 }

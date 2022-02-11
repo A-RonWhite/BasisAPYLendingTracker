@@ -38,16 +38,17 @@ const webScraper = async (url, xPath, source) => {
       //console.log(text2);
       calculateAPY(text2);
     } else {
-      var text3 = text.replace(/ \%/g, "");
-      console.log(source, text3);
+      var text3 = text.replace(/[&\/\\#+()$~%]/g, "");
     }
 
     if (source === "Francium: ") {
-      franciumAPY = text3;
+      franciumAPY = Math.round(text3);
+      console.log(franciumAPY);
     }
 
     if (source === "Tulip: ") {
-      tulipAPY = text3;
+      tulipAPY = Math.round(text3);
+      console.log(tulipAPY);
     }
   } catch (e) {
     console.log("There was an error: ", e);
@@ -58,7 +59,7 @@ const webScraper = async (url, xPath, source) => {
 
 const calculateAPY = (vaultTokens) => {
   var t = 80 * (13194.444444444443 / vaultTokens) * 365;
-  var x = Math.round(100 * (Math.pow(1 + t / 29200, 29200) - 1)).toFixed(2);
+  var x = Math.round(100 * (Math.pow(1 + t / 29200, 29200) - 1));
   console.log("BASIS: ", x);
   basisAPY = x;
 };
@@ -97,7 +98,7 @@ var interval = setInterval(() => {
   );
 }, 300000);
 
-/* REST API */
+/* ---- REST API ----- */
 
 const app = express();
 app.use(cors());
