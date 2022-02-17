@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer-extra");
-const express = require("express");
-const cors = require("cors");
+const admin = require("firebase-admin");
+
+const serviceAccount = require("./average-apy-tracker-firebase-adminsdk-8fvnj-50c109a041.json");
 
 // Add stealth plugin and use defaults (all tricks to hide puppeteer usage)
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
@@ -15,7 +16,7 @@ let franciumAPY;
 let tulipAPY;
 
 const webScraper = async (url, xPath, source) => {
-  console.log(source, "starting...");
+  console.log(source, "starting scraping...");
 
   const browser = await puppeteer.launch({
     headless: true,
@@ -35,7 +36,6 @@ const webScraper = async (url, xPath, source) => {
 
     if (source === "Solscan: ") {
       var text2 = text.replace(/,/g, "");
-      //console.log(text2);
       calculateAPY(text2);
       updateFirebase("BASIS", { [new Date().getTime()]: basisAPY });
     } else {
@@ -45,13 +45,13 @@ const webScraper = async (url, xPath, source) => {
     if (source === "Francium: ") {
       franciumAPY = Math.round(text3);
       updateFirebase("Francium", { [new Date().getTime()]: franciumAPY });
-      console.log(franciumAPY);
+      console.log("Francium: ", franciumAPY);
     }
 
     if (source === "Tulip: ") {
       tulipAPY = Math.round(text3);
       updateFirebase("Tulip", { [new Date().getTime()]: tulipAPY });
-      console.log(tulipAPY);
+      console.log("Tulip: ", tulipAPY);
     }
   } catch (e) {
     console.log("There was an error: ", e);
@@ -70,7 +70,7 @@ const calculateAPY = (vaultTokens) => {
 webScraper(
   "https://francium.io/app/lend",
   '//*[@id="app"]/div/div[3]/div/div/div/div[2]/div/div[2]/div/div/div/div/div/div/table/tbody/tr[22]/td[2]/div/p',
-  "Francium: " //*[@id="app"]/div/div[3]/div/div/div/div[2]/div/div[2]/div/div/div/div/div/div/table/tbody/tr[contains(text(), "BASIS")]
+  "Francium: "
 );
 webScraper(
   "https://tulip.garden/lend",
@@ -82,48 +82,6 @@ webScraper(
   '//*[@id="root"]/section/main/div/div[2]/div/div[1]/div/div[2]/div[4]/div[2]/text()[1]',
   "Solscan: "
 );
-
-setInterval(() => {
-  webScraper(
-    "https://francium.io/app/lend",
-    '//*[@id="app"]/div/div[3]/div/div/div/div[2]/div/div[2]/div/div/div/div/div/div/table/tbody/tr[22]/td[2]/div/p',
-    "Francium: "
-  );
-  webScraper(
-    "https://tulip.garden/lend",
-    '//*[contains(text(), "BASIS")]/parent::*/parent::*/parent::*//*[contains(text(), "%")]',
-    "Tulip: "
-  );
-  webScraper(
-    "https://solscan.io/account/3sBX8hj4URsiBCSRV26fEHkake295fQnM44EYKKsSs51",
-    '//*[@id="root"]/section/main/div/div[2]/div/div[1]/div/div[2]/div[4]/div[2]/text()[1]',
-    "Solscan: "
-  );
-}, 300000);
-
-/* ---- REST API ----- */
-
-/* const app = express();
-app.use(cors());
-
-// Used to lock down domain
-// app.use(cors({
-//   origin: 'http://yourapp.com'
-// }));
-
-app.get("/basis", (req, res) => {
-  res.status(200).send({
-    basis: basisAPY,
-    francium: franciumAPY,
-    tulip: tulipAPY,
-  });
-});
-
-app.listen(4000, () => console.log(`Example app listening on port ${4000}!`)); */
-
-var admin = require("firebase-admin");
-
-var serviceAccount = require("./average-apy-tracker-firebase-adminsdk-8fvnj-50c109a041.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

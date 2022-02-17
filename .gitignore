@@ -1,3 +1,4 @@
 /node_modules
 .DS_Store
 /server/average-apy-tracker-firebase-adminsdk-8fvnj-50c109a041.json
+/server/test.js
