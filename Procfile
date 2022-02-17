@@ -1,1 +1,1 @@
-web: cd server && node herokuApp.js
+web: npm start
