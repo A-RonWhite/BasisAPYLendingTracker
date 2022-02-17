@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.17.2",
     "firebase": "^9.6.6",
     "firebase-admin": "^10.0.2",
     "puppeteer": "^13.2.0",
@@ -12,7 +10,7 @@
   "name": "apy-scrapper",
   "version": "1.0.0",
   "description": "apy scrapper",
-  "main": "app.js",
+  "main": "server/herokuApp.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
