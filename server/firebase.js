@@ -1,49 +1,55 @@
-// Import the functions you need from the SDKs you need
+var admin = require("firebase-admin");
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+var serviceAccount = require("./average-apy-tracker-firebase-adminsdk-8fvnj-50c109a041.json");
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBk4NCe0UbO4JVv3NM5cUrOTwNk4i_fU-4",
-  authDomain: "average-apy-tracker.firebaseapp.com",
-  projectId: "average-apy-tracker",
-  storageBucket: "average-apy-tracker.appspot.com",
-  messagingSenderId: "163842745130",
-  appId: "1:163842745130:web:cffb131e78732de0b6b453",
-  measurementId: "G-6SR6Z5GES1",
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
+const test = {
+  [new Date().getTime()]: 131,
 };
 
-// Initialize Firebase
-/* const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
- */
-//npm install -g firebase-tools
+db.collection("APYDump")
+  .doc("BASIS")
+  .update(test)
+  .then(() => {
+    console.log("Added to the database");
+  });
 
-const {
-  initializeApp,
-  applicationDefault,
-  cert,
-} = require("firebase-admin/app");
-const {
-  getFirestore,
-  Timestamp,
-  FieldValue,
-} = require("firebase-admin/firestore");
+const updateFirebase = (document, field) => {
+  db.collection("APYDump")
+    .doc(document)
+    .update(field)
+    .then(() => {
+      console.log("Added to the database");
+    });
+};
 
-const serviceAccount = firebaseConfig;
+/* const arr = [];
 
-initializeApp({
-  credential: cert(serviceAccount),
-});
+const average = (array) => array.reduce((a, b) => a + b) / array.length; */
 
-const db = getFirestore();
+/* db.collection("APYDump")
+  .doc("BASIS")
+  .get()
+  .then((doc) => {
+    if (!doc.exists) {
+      console.log("No doc exists");
+    }
 
-initializeApp();
+    console.log(doc._fieldsProto);
 
-const aTuringRef = db.collection("APYDump").doc("BASIS");
+    //add sum / by num
 
-aTuringRef.set({
-  "12/02/2022, 14:37:37": 865,
-});
+    for (const key in doc._fieldsProto) {
+      console.log(`${key}: ${doc._fieldsProto[key].integerValue}`);
+
+      arr.push(parseInt(doc._fieldsProto[key].integerValue));
+    }
+  })
+  .then(() => {
+    console.log("Average: ", average(arr));
+  }); */

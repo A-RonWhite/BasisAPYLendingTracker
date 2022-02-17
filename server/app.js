@@ -37,17 +37,20 @@ const webScraper = async (url, xPath, source) => {
       var text2 = text.replace(/,/g, "");
       //console.log(text2);
       calculateAPY(text2);
+      updateFirebase("BASIS", { [new Date().getTime()]: basisAPY });
     } else {
       var text3 = text.replace(/[&\/\\#+()$~%]/g, "");
     }
 
     if (source === "Francium: ") {
       franciumAPY = Math.round(text3);
+      updateFirebase("Francium", { [new Date().getTime()]: franciumAPY });
       console.log(franciumAPY);
     }
 
     if (source === "Tulip: ") {
       tulipAPY = Math.round(text3);
+      updateFirebase("Tulip", { [new Date().getTime()]: tulipAPY });
       console.log(tulipAPY);
     }
   } catch (e) {
@@ -100,7 +103,7 @@ var interval = setInterval(() => {
 
 /* ---- REST API ----- */
 
-const app = express();
+/* const app = express();
 app.use(cors());
 
 // Used to lock down domain
@@ -116,4 +119,34 @@ app.get("/basis", (req, res) => {
   });
 });
 
-app.listen(4000, () => console.log(`Example app listening on port ${4000}!`));
+app.listen(4000, () => console.log(`Example app listening on port ${4000}!`)); */
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./average-apy-tracker-firebase-adminsdk-8fvnj-50c109a041.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
+const test = {
+  [new Date().getTime()]: 131,
+};
+
+/* db.collection("APYDump")
+  .doc("BASIS")
+  .update(test)
+  .then(() => {
+    console.log("Added to the database");
+  }); */
+
+const updateFirebase = (document, field) => {
+  db.collection("APYDump")
+    .doc(document)
+    .update(field)
+    .then(() => {
+      console.log("Added to the database");
+    });
+};
