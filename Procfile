@@ -1,1 +1,1 @@
-web: node server/herokuApp.js
+web: cd server && node herokuApp.js

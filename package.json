@@ -13,7 +13,7 @@
   "main": "server/herokuApp.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/herokuApp.js"
+    "start": "cd server && node herokuApp.js"
   },
   "author": "",
   "license": "ISC"
